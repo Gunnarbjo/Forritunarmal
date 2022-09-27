@@ -1,0 +1,4 @@
+;; Notkun: (sum2 i n)
+;; Fyrir: i og n eru heiltölur, i <= n+1
+;; Gildi: Summan i+(i+1)+...+n, summa þeirra
+;; heiltalna k þannig að i <= k <= n.

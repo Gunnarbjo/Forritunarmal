@@ -1,0 +1,2 @@
+;;λx.(λy.(λz.x(y (yz))))
+(lambda (x) (lambda (y) (lambda (z) (x (y (y z))))))

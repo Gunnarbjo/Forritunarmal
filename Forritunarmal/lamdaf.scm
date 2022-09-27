@@ -1,0 +1,5 @@
+;;λx.((x + z) /z)
+(define a 3) 
+(define (fun b)
+        (/ (+ b a) a)
+)
