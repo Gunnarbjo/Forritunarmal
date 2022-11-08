@@ -1,0 +1,153 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;;;                         Design document                              ;;;
+;;;----------------------------------------------------------------------;;;
+;;;             Imported: Ekkert er imported                             ;;;
+;;;             Exported: Allt er exported                               ;;;
+;;;                                                                      ;;;
+;;;             Notkun:  z = makeComp(x,y);                              ;;;
+;;;             Fyrir:   x og y eru rauntölur                            ;;;
+;;;             Eftir:   z er listi þar sem haus listans                 ;;;
+;;;                      er raun-tala og hali ímyndað stak.              ;;;
+;;;                                                                      ;;;
+;;;             Notkun: a = getReal(z);                                  ;;;
+;;;             Fyrir:  z er tvinntala                                   ;;;
+;;;             Eftir:  a er raun-tölu partur z                          ;;;
+;;;                                                                      ;;;
+;;;             Notkun: b = getImag(z);                                  ;;;
+;;;             Fyrir:  z er tvinntala                                   ;;;
+;;;             Eftir:  b er ímyndaður partur z                          ;;;
+;;;                                                                      ;;;
+;;;             Notkun: c = +++(k,y);                                    ;;;
+;;;             Fyrir:  k og y eru tvinntölur                            ;;;
+;;;             Eftir:  c er samlagning á x og y                         ;;;
+;;;                                                                      ;;;
+;;;             Notkun: d = ---(k,y)                                     ;;;
+;;;             Fyrir:  k og y eru tvinntölur                            ;;;
+;;;             Eftir:  d er frádráttur á x og y                         ;;;
+;;;                                                                      ;;;
+;;;             Notkun: e = ***(k,y)                                     ;;;
+;;;             Fyrir:  k og y eru tvinntölur                            ;;;
+;;;             Eftir:  e er margföldun á x og y                         ;;;
+;;;                                                                      ;;;
+;;;             Notkun: f = ///(k,y);                                    ;;;
+;;;             Fyrir:  k og y eru tvinntölur                            ;;;
+;;;             Eftir:  f er deiling á x og y                            ;;;
+;;;                                                                      ;;;
+;;;             Notkun: k = print(z);                                    ;;;
+;;;             Fyrir:  z er tvinntala                                   ;;;
+;;;             Eftir:  k er Strengur með niðurstöðum úr getReal(z)      ;;;
+;;;                     og getImag(z)                                    ;;;
+;;;                                                                      ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+"complex.mmod" =
+!
+{{
+    ;;; Notkun:  z = makeComp(x,y);
+    ;;; Fyrir:   x og y eru rauntölur
+    ;;; Eftir:   z er listi þar sem haus listans
+    ;;;          er raun-tala og hali ímyndað stak.
+    makeComp =
+        fun(real,imag)
+        {
+            return [real,imag];
+        };
+    getReal =
+        ;;; Notkun: a = getReal(z);
+        ;;; Fyrir:  z er tvinntala 
+        ;;; Eftir:  a er raun-tölu partur z
+        fun(z)   
+        {
+            return head(z);
+        };
+    getImag =
+        ;;; Notkun: b = getImag(z);
+        ;;; Fyrir:  z er tvinntala
+        ;;; Eftir:  b er ímyndaður partur z
+        fun(z)
+        {
+            return head(tail(z));
+        };
+    +++ = 
+        ;;; Notkun: c = +++(k,y);
+        ;;; Fyrir:  k og y eru tvinntölur
+        ;;; Eftir:  c er samlagning á x og y
+        fun(k,y) 
+        {
+           return makeComp(getReal(k) + getReal(y),getImag(k) + getImag(y));
+        };
+    --- =
+        ;;; Notkun: d = ---(k,y)
+        ;;; Fyrir:  k og y eru tvinntölur
+        ;;; Eftir:  d er frádráttur á x og y
+        fun(k,y)
+        {
+            return makeComp(getReal(k) - getReal(y), getImag(k) - getImag(y));
+        };
+    *** =
+        ;;; Notkun: e = ***(k,y)
+        ;;; Fyrir:  k og y eru tvinntölur
+        ;;; Eftir:  e er margföldun á x og y
+        fun(k,y)
+        {
+            return makeComp(getReal(k)*getReal(y)-getImag(k)*getImag(y),
+            getReal(k)*getImag(y)+getImag(k)*getReal(y));
+        };
+    /// =
+        ;;; Notkun: f = ///(k,y);
+        ;;; Fyrir:  k og y eru tvinntölur
+        ;;; Eftir:  f er deiling á x og y
+        fun(k,y)
+        {
+            val c = getReal(y)*getReal(y)+getImag(y)*getImag(y);
+            return makeComp((getReal(k)*getReal(y)+getImag(k)*getImag(y))/c, 
+                (getImag(k)*getReal(y)-getReal(k)*getImag(y))/c);
+        }; 
+    print =
+        ;;; Notkun: k = print(z);
+        ;;; Fyrir:  z er tvinntala
+        ;;; Eftir:  k er Strengur með niðurstöðum úr getReal(z)
+        ;;;         og getImag(z)
+        fun(z)
+        {
+            return "real: " ++ getReal(z) ++ " \t imag: " ++ getImag(z);
+        };  
+}};
+
+"complex.mexe" = main in
+{{
+main =
+	fun()
+	{
+		try
+		{
+			val c1 = makeComp(56, 93);
+            writeln("c1: \t   " ++ print(c1));
+
+			val c2 = makeComp(3, 6);
+            writeln("c2: \t   " ++ print(c2));
+
+            val temp1 = c1 +++ c2;
+            writeln("c1 +++ c2: " ++ print(temp1));
+            
+            val temp2 = c1 --- c2;
+            writeln("c1 --- c2: " ++ print(temp2));
+            
+            val temp3 = c1 *** c2;
+            writeln("c1 *** c2: " ++ print(temp3));
+            
+            val temp4 = c1 /// c2;
+            writeln("c1 /// c2: " ++ print(temp4));
+
+
+		}
+		catch(e)
+		{
+			printExceptionTrace(&e)
+		}
+	};
+}}
+*
+"complex.mmod"
+*
+BASIS
+;

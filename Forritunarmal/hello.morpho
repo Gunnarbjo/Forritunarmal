@@ -1,0 +1,11 @@
+"hello.mexe" = main in
+{{
+    main =
+        fun()
+        {
+            writeln("Hello World!");
+        };
+}}
+*
+BASIS
+;
